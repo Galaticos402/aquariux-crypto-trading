@@ -1,21 +1,21 @@
 package com.aquariux.crypto_trading.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.math.BigDecimal;
 
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Data
-public class Wallet {
+public class Wallet extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long walletId;
-    private String currency;
+    private String asset;
     private BigDecimal balance;
-    private User owner;
-    private Token token;
+    @ManyToOne
+    @JoinColumn(name = "trader_id")
+    private Trader owner;
 }
