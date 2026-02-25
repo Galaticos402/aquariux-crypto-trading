@@ -1,4 +1,4 @@
-package com.aquariux.crypto_trading.dto.response;
+package com.aquariux.crypto_trading.dto.token;
 
 import lombok.Data;
 

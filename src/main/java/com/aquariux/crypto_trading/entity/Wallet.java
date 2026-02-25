@@ -13,9 +13,12 @@ public class Wallet extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long walletId;
+    @Column(nullable = false, unique = true)
     private String asset;
     private BigDecimal balance;
     @ManyToOne
     @JoinColumn(name = "trader_id")
     private Trader owner;
+    @Version
+    private Long version;
 }

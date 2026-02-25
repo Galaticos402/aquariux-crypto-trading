@@ -2,13 +2,13 @@ package com.aquariux.crypto_trading.entity;
 
 import com.aquariux.crypto_trading.enums.TransactionType;
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 
 import java.math.BigDecimal;
 
 @EqualsAndHashCode(callSuper = true)
 @Entity
+@Builder
 @Data
 public class Transaction extends BaseEntity {
     @Id

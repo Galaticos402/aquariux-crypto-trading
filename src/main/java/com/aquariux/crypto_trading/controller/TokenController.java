@@ -1,7 +1,7 @@
 package com.aquariux.crypto_trading.controller;
 
 import com.aquariux.crypto_trading.dto.response.BaseResponseDto;
-import com.aquariux.crypto_trading.dto.response.TokenGetResponseDto;
+import com.aquariux.crypto_trading.dto.token.TokenGetResponseDto;
 import com.aquariux.crypto_trading.entity.Token;
 import com.aquariux.crypto_trading.repository.ITokenRepository;
 import org.springframework.beans.factory.annotation.Autowired;

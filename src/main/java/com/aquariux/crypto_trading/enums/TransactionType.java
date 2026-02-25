@@ -6,7 +6,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum TransactionType {
-    SELL(0),
-    BUY(1);
-    private final int value;
+    SELL("SELL"),
+    BUY("BUY");
+    private final String value;
 }

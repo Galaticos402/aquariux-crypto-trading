@@ -1,6 +1,6 @@
 package com.aquariux.crypto_trading.entity;
 
-import com.aquariux.crypto_trading.dto.response.TokenGetResponseDto;
+import com.aquariux.crypto_trading.dto.token.TokenGetResponseDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
