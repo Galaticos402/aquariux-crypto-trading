@@ -1,4 +1,4 @@
-package com.aquariux.crypto_trading.dto;
+package com.aquariux.crypto_trading.dto.response;
 
 import lombok.Builder;
 import lombok.Data;

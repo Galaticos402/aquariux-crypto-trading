@@ -49,7 +49,7 @@ public class PriceAggregationService {
                     .min(BigDecimal::compareTo)
                     .orElse(null);
 
-            Token targetToken = tokenRepository.findBySymbol(key).orElse(null);
+            Token targetToken = tokenRepository.findBySymbolIgnoreCase(key).orElse(null);
             if(Objects.isNull(targetToken)){
                 tokenRepository.save(new Token(null, key, bestBid, bestAsk));
             }else{

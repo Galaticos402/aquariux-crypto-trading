@@ -1,5 +1,6 @@
 package com.aquariux.crypto_trading.entity;
 
+import com.aquariux.crypto_trading.dto.response.TokenGetResponseDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -22,4 +23,11 @@ public class Token extends BaseEntity{
     private BigDecimal bestBid;
     private BigDecimal bestAsk;
 
+    public TokenGetResponseDto toTokenGetResponseDto(){
+        TokenGetResponseDto tokenGetResponseDto = new TokenGetResponseDto();
+        tokenGetResponseDto.setSymbol(this.symbol);
+        tokenGetResponseDto.setBestBid(this.bestBid);
+        tokenGetResponseDto.setBestAsk(this.bestAsk);
+        return tokenGetResponseDto;
+    }
 }

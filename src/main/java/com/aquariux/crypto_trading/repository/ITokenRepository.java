@@ -11,5 +11,5 @@ import java.util.Optional;
 
 @Repository
 public interface ITokenRepository extends JpaRepository<Token, Long> {
-    Optional<Token> findBySymbol(String symbol);
+    Optional<Token> findBySymbolIgnoreCase(String symbol);
 }
