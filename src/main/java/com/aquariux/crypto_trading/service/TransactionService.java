@@ -47,7 +47,13 @@ public class TransactionService {
         if (!supportedCrypto.contains(targetToken.getSymbol().toUpperCase())) {
             throw new RuntimeException("Unsupported token");
         }
-        TransactionType type = TransactionType.valueOf(transactionCreateDto.getTransactionType());
+
+        // Check if it is a valid transaction
+        if(!TransactionType.isValid(transactionCreateDto.getTransactionType())){
+            throw new RuntimeException("Invalid transaction type");
+        }
+
+        TransactionType type = TransactionType.valueOf(transactionCreateDto.getTransactionType().toUpperCase());
 
         BigDecimal price = type == TransactionType.BUY
                 ? targetToken.getBestAsk()
