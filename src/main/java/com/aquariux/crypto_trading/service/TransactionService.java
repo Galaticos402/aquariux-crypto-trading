@@ -13,6 +13,8 @@ import com.aquariux.crypto_trading.repository.ITraderRepository;
 import com.aquariux.crypto_trading.repository.ITransactionRepository;
 import com.aquariux.crypto_trading.repository.IWalletRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,7 +38,7 @@ public class TransactionService {
     private static final List<String> supportedCrypto = List.of("BTCUSDT", "ETHUSDT");
 
     @Transactional
-    public void createTransaction(TransactionCreateDto transactionCreateDto){
+    public Long createTransaction(TransactionCreateDto transactionCreateDto){
         Trader currentTrader = traderRepository.findById(securityContext.getCurrentUserId())
                 .orElseThrow(() -> new RuntimeException("Unable to get current trader info"));
 
@@ -122,17 +124,14 @@ public class TransactionService {
                 .quantity(transactionCreateDto.getQuantity())
                 .build();
 
-        transactionRepository.save(transaction);
+        Transaction savedTransaction = transactionRepository.save(transaction);
+        return savedTransaction.getTransactionId();
     }
 
     @Transactional
-    public List<TransactionGetResponseDto> queryTransactionHistory(){
-       try{
-           Long traderId = securityContext.getCurrentUserId();
-           List<Transaction> transactionList = transactionRepository.findByTrader_TraderId(traderId).orElse(Collections.emptyList());
-           return transactionList.stream().map(Transaction::toTransactionGetResponseDto).toList();
-       }catch (Exception e){
-           throw e;
-       }
+    public Page<TransactionGetResponseDto> queryTransactionHistory(Pageable pageable){
+        Long traderId = securityContext.getCurrentUserId();
+        Page<Transaction> transactionPage = transactionRepository.findByTrader_TraderId(traderId, pageable);
+        return transactionPage.map(Transaction::toTransactionGetResponseDto);
     }
 }

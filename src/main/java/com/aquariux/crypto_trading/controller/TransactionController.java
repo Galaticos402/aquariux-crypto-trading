@@ -1,11 +1,15 @@
 package com.aquariux.crypto_trading.controller;
 
 import com.aquariux.crypto_trading.dto.response.BaseResponseDto;
+import com.aquariux.crypto_trading.dto.response.PageResponse;
 import com.aquariux.crypto_trading.dto.transaction.TransactionCreateDto;
 import com.aquariux.crypto_trading.dto.transaction.TransactionGetResponseDto;
 import com.aquariux.crypto_trading.facade.TransactionFacade;
 import com.aquariux.crypto_trading.service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,25 +25,27 @@ public class TransactionController {
     TransactionService transactionService;
 
     @PostMapping
-    public ResponseEntity<BaseResponseDto<String>> createTransaction(@RequestBody TransactionCreateDto transactionCreateDto) {
+    public ResponseEntity<BaseResponseDto<Long>> createTransaction(@RequestBody TransactionCreateDto transactionCreateDto) {
         try{
-            transactionFacade.safeCreateTransaction(transactionCreateDto);
-            return ResponseEntity.ok(BaseResponseDto.<String>builder().data("SUCCESS").status(true).build());
+            Long transactionId = transactionFacade.safeCreateTransaction(transactionCreateDto);
+            return ResponseEntity.ok(BaseResponseDto.<Long>builder().data(transactionId).status(true).errorMsg("").build());
         }catch (RuntimeException re){
             return ResponseEntity.badRequest().body(BaseResponseDto
-                                            .<String>builder()
-                                            .data("FAILED")
+                                            .<Long>builder()
+                                            .data(null)
                                             .status(false)
                                             .errorMsg(re.getMessage())
                                             .build());
         }
     }
     @GetMapping("/history")
-    public ResponseEntity<BaseResponseDto<List<TransactionGetResponseDto>>> queryTransactionHistory(){
-        List<TransactionGetResponseDto> history = transactionService.queryTransactionHistory();
-        BaseResponseDto<List<TransactionGetResponseDto>> responseDto = BaseResponseDto
-                .<List<TransactionGetResponseDto>>builder()
-                .data(history)
+    public ResponseEntity<BaseResponseDto<PageResponse<TransactionGetResponseDto>>> queryTransactionHistory(@RequestParam(defaultValue = "0") int page,
+                                                                                                            @RequestParam(defaultValue = "10") int size){
+        Pageable pageable = PageRequest.of(page, size);
+        Page<TransactionGetResponseDto> history = transactionService.queryTransactionHistory(pageable);
+        BaseResponseDto<PageResponse<TransactionGetResponseDto>> responseDto = BaseResponseDto
+                .<PageResponse<TransactionGetResponseDto>>builder()
+                .data(PageResponse.from(history))
                 .status(true)
                 .errorMsg("")
                 .build();
