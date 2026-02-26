@@ -7,6 +7,5 @@ import java.util.List;
 import java.util.Optional;
 
 public interface IWalletRepository extends JpaRepository<Wallet, Long> {
-    Optional<Wallet> findByWalletIdAndTraderId(Long walletId, Long traderId);
-    Optional<Wallet> findByAssetAndTraderIdIgnoreCase(String asset, Long traderId);
+    Optional<Wallet> findByAssetIgnoreCaseAndTrader_TraderId(String asset, Long traderId);
 }

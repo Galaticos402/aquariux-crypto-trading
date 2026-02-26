@@ -15,11 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.management.RuntimeErrorException;
 import java.math.BigDecimal;
-import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 public class TransactionService {
@@ -61,14 +58,14 @@ public class TransactionService {
         if (type == TransactionType.BUY) {
             // Check if the wallet has existed and belongs to the current trader
              sourceWallet = walletRepository
-                    .findByAssetAndTraderIdIgnoreCase(
+                    .findByAssetIgnoreCaseAndTrader_TraderId(
                             "USDT",
                             securityContext.getCurrentUserId()
                     )
                     .orElseThrow(() -> new RuntimeException("Wallet not found"));
 
              destWallet = walletRepository
-                    .findByAssetAndTraderIdIgnoreCase(
+                    .findByAssetIgnoreCaseAndTrader_TraderId(
                             targetToken.getSymbol().equalsIgnoreCase("BTCUSDT") ? "BTC" : "ETH",
                             securityContext.getCurrentUserId()
                     )
@@ -85,14 +82,14 @@ public class TransactionService {
         }else{
             // Check if the wallet has existed and belongs to the current trader
             sourceWallet = walletRepository
-                    .findByAssetAndTraderIdIgnoreCase(
+                    .findByAssetIgnoreCaseAndTrader_TraderId(
                             targetToken.getSymbol().equalsIgnoreCase("BTCUSDT") ? "BTC" : "ETH",
                             securityContext.getCurrentUserId()
                     )
                     .orElseThrow(() -> new RuntimeException("Wallet not found"));
 
             destWallet = walletRepository
-                    .findByAssetAndTraderIdIgnoreCase(
+                    .findByAssetIgnoreCaseAndTrader_TraderId(
                             "USDT",
                             securityContext.getCurrentUserId()
                     )

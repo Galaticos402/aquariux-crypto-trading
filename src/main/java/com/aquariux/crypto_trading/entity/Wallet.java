@@ -18,7 +18,7 @@ public class Wallet extends BaseEntity {
     private BigDecimal balance;
     @ManyToOne
     @JoinColumn(name = "trader_id")
-    private Trader owner;
+    private Trader trader;
     @Version
     private Long version;
 }
