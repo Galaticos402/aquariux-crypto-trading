@@ -13,6 +13,7 @@ import com.aquariux.crypto_trading.repository.ITraderRepository;
 import com.aquariux.crypto_trading.repository.ITransactionRepository;
 import com.aquariux.crypto_trading.repository.IWalletRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class TransactionService {
@@ -38,7 +40,13 @@ public class TransactionService {
     private static final List<String> supportedCrypto = List.of("BTCUSDT", "ETHUSDT");
 
     @Transactional
-    public Long createTransaction(TransactionCreateDto transactionCreateDto){
+    public Long createTransaction(TransactionCreateDto transactionCreateDto, String idempotencyKey){
+        // Check idempotency key
+        Optional<Transaction> existingTransaction =
+                transactionRepository.findByIdempotencyKey(idempotencyKey);
+        if (existingTransaction.isPresent()) {
+            return existingTransaction.get().getTransactionId();
+        }
         Trader currentTrader = traderRepository.findById(securityContext.getCurrentUserId())
                 .orElseThrow(() -> new RuntimeException("Unable to get current trader info"));
 
@@ -122,8 +130,8 @@ public class TransactionService {
                 .trader(currentTrader)
                 .type(type)
                 .quantity(transactionCreateDto.getQuantity())
+                .idempotencyKey(idempotencyKey)
                 .build();
-
         Transaction savedTransaction = transactionRepository.save(transaction);
         return savedTransaction.getTransactionId();
     }

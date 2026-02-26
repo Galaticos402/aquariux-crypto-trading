@@ -13,10 +13,10 @@ public class TransactionFacade {
     @Autowired
     TransactionService transactionService;
 
-    public Long safeCreateTransaction(TransactionCreateDto transactionCreateDto){
+    public Long safeCreateTransaction(TransactionCreateDto transactionCreateDto, String idempotencyKey){
         for(int i = 0; i < MAX_RETRY; i++){
             try{
-                Long transactionId = transactionService.createTransaction(transactionCreateDto);
+                Long transactionId = transactionService.createTransaction(transactionCreateDto, idempotencyKey);
                 return transactionId;
             }catch (OptimisticLockException optimisticEx){
                 if(i == MAX_RETRY - 1){

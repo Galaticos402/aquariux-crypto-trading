@@ -28,6 +28,8 @@ public class Transaction extends BaseEntity {
     private BigDecimal price;
     @Enumerated(EnumType.STRING)
     private TransactionType type;
+    @Column(unique = true)
+    private String idempotencyKey;
 
     public TransactionGetResponseDto toTransactionGetResponseDto(){
         TransactionGetResponseDto transactionGetResponseDto = new TransactionGetResponseDto();

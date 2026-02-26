@@ -25,9 +25,10 @@ public class TransactionController {
     TransactionService transactionService;
 
     @PostMapping
-    public ResponseEntity<BaseResponseDto<Long>> createTransaction(@RequestBody TransactionCreateDto transactionCreateDto) {
+    public ResponseEntity<BaseResponseDto<Long>> createTransaction(@RequestBody TransactionCreateDto transactionCreateDto,
+                                                                    @RequestHeader("Idempotency-Key") String idempotencyKey) {
         try{
-            Long transactionId = transactionFacade.safeCreateTransaction(transactionCreateDto);
+            Long transactionId = transactionFacade.safeCreateTransaction(transactionCreateDto, idempotencyKey);
             return ResponseEntity.ok(BaseResponseDto.<Long>builder().data(transactionId).status(true).errorMsg("").build());
         }catch (RuntimeException re){
             return ResponseEntity.badRequest().body(BaseResponseDto
