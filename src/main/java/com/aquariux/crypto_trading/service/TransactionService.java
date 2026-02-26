@@ -2,6 +2,7 @@ package com.aquariux.crypto_trading.service;
 
 import com.aquariux.crypto_trading.context.SecurityContext;
 import com.aquariux.crypto_trading.dto.transaction.TransactionCreateDto;
+import com.aquariux.crypto_trading.dto.transaction.TransactionGetResponseDto;
 import com.aquariux.crypto_trading.entity.Token;
 import com.aquariux.crypto_trading.entity.Trader;
 import com.aquariux.crypto_trading.entity.Transaction;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -115,8 +117,16 @@ public class TransactionService {
                 .build();
 
         transactionRepository.save(transaction);
+    }
 
-
-
+    @Transactional
+    public List<TransactionGetResponseDto> queryTransactionHistory(){
+       try{
+           Long traderId = securityContext.getCurrentUserId();
+           List<Transaction> transactionList = transactionRepository.findByTrader_TraderId(traderId).orElse(Collections.emptyList());
+           return transactionList.stream().map(Transaction::toTransactionGetResponseDto).toList();
+       }catch (Exception e){
+           throw e;
+       }
     }
 }
